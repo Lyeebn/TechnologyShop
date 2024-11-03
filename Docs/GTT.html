@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>	<meta charset="utf-8"/>
+	<title>将挑题稿【全选Ctrl + A】复制到下面框中即可提炼挑题标记 🐢 LaTeX</title>
+	<style id="csse">
+	body {background-color:unset!important}
+	h1 {background-color:red;}
+	h2 {background-color:cyan;}
+	h3 {background-color:gray;}
+	h4 {color:purple;}
+	.op {text-align: center;background-color:pink;zoom:2; position:fixed; width:100%;top:0px;left:0px}
+	textarea {width:98vw;height:25em;margin-top:4em}
+	table,table  td{ border: 1px solid #555; }
+	table td{ padding: 5px; }
+	tr:hover{background-color:gray}
+	</style>
+</head>
+<body>
+<div class="op">
+<a target="_blank" href="https://note.youdao.com/noteshare?id=9eef0aa66ac46541c5fbae70df912eba"> 挑题须知</a>
+<button onclick="result.innerHTML=document.title"> 帮助 </button>
+<a onclick="tx.click()" style="zoom:0.5;display:inline-block">是否输出 <br/>题目类型：</a><input id="tx" type="checkbox" onchange="算()" title="是否为例" />
+<button onclick="复制()"> 一键复制全部挑题标记 </button>
+<span style="zoom:0.6;">
+<button onclick="下HTML();" titie="下文件">存</button>
+<button onclick="算();" titie="提炼【挑题标记】一般已经自动提炼了">提炼</button>
+<button onclick="生成增题ID()"> 生成增题ID </button>
+<button onclick="window.location.reload()" title="或【Ctrl + F5】，获取更新功能，修复 bug"> 强制刷新 </button>
+</span>
+</div>
+<textarea id="txt" rows="5" autofocus="autofocus" placeholder="将挑题稿全选【Ctrl + A】复制【Ctrl + C】粘贴【Ctrl + V】过来即可提炼【挑题ID】" oninput="算()" onchange="算()" ></textarea>
+
+<div id="result"><h1>用 Chorme 浏览器打开挑题稿<p/>然后【全选 Ctrl + A】复制到下面框中即可提炼挑题标记</h1></div>
+<script type="text/javascript">
+va = document.createElement("a");
+function 下HTML(){
+	va.download = `挑《${书名||'书名'}》.html`  // 下载文件名
+	va.href= 'data:text/plain;charset=utf-8,' + encodeURIComponent(csse.outerHTML+result.innerHTML)
+	va.click() ; }
+c = console.log
+
+cm=`小⼩
+几⼏
+页⻚
+一⼀
+二⼆
+八⼋
+十⼗` // 云
+
+function 算(){
+	q = txt.value; w = ''; // e = '';
+ 	cm.split('\n').forEach(x=>{q=q.replace(RegExp(x[1],'g'), x[0])})
+	书名 = q.match(/^\d+ *[寒春暑秋].+$/m)
+	书名 = 书名? 书名[0]: '未知书名';
+	q = q.replace(/^.{5,600}\. \. \. \. \. \. \. .{20,3000}\. \. \. \. \. \. \. \d+\n/s, '').replace(/快乐学习.+?LATEX=/s, '')
+	q = q.replace(/^.{5,999}\. \. \. \. \d+\n/s, '') // 删目录，不严谨
+	q = q.replace(/\s*【原】/g, '\n【原】') // .replace(/知识模块/g, '考点')
+	q = q.replace(/(第[零一二三四五六七八九十百⼀⼆⼋⼗]+部分.+)/m, '<h1>$1</h1>')
+	.replace(/(第[零一二三四五六七八九十百]+章.+)/gm, '<h2>$1</h2>')
+	.replace(/((jie\d+ *)?第[一-零]+节.+)/gm, '<h3>$1</h3>')
+	.replace(/(课后作业|思维拓展|随堂练习|典例精析|高考真题|本节小结|精讲精练|小标题组.+)/gm, '<h4>$1</h4>')
+	.replace(/(【原】.+xxmb=\d+)/gm, '<h5>$1</h5>')
+	.replace(/^(考点[零一二三四五六七八九十百]+ *.+)/gm, '<h4>$1</h4>')
+	.replace(/(【原】.+ZSQD=\d+)/gm, '<h5>$1</h5>')
+	.replace(/(【原】.+ID=\d+)/gm, '<h5>$1</h5>')
+	//.replace(/^[^<].+$/gm, '')
+	q.replace(/<h\d>.+<\/h\d>/gm, x => {w += x + '\n'})
+	// w.replace(/<h[1-3]>.+<\/h[1-3]>/gm, x => {e += x + '\n'})
+	if (tx.checked) {w=w.replace(/(【原】.+?例)/gm,'例题$1').replace(/(【原】.+?[练作])/gm,'练习$1')}
+	result.innerHTML = `<h1>${书名}</h1>\n` + w.replace(/h5>/gm, 'p>')
+};
+// 算()
+
+function 复制() {
+	window.getSelection().removeAllRanges();
+	var range = document.createRange();
+	range.selectNodeContents(result);
+	window.getSelection().addRange(range);
+	document.execCommand('copy')
+}
+
+function 生成增题ID() { z='<h3>供新题编号，以便给本少插入</h3>';
+	for (i=1;i<256;i++) {z+= `\n🔥${i}<p/>`};
+	result.innerHTML = z }
+</script>
+</body>
+</html>
