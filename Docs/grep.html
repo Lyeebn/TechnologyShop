@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./ico/Raphael.ico" />
+    <title>🔍 grep 筛选项</title>
+    <style>
+	body {background-color:#A4C0A7; overflow-x:hidden} #xxr{padding-top:5em}
+	span {white-space:nowrap} textarea:hover{height:52vh!important}
+ 	input.flt {min-width:25em}
+	input:focus {background:pink} XXinput:focus {zoom:1.1;width:20em}
+	#xxopp{background:#9B9;xxposition:fixed;width:98vw;opacity:.8}#opp:hover{ opacity:1; background:pink}
+	#opp:hover::after{content:"文件拖过来释放打开"; color:red; position:fixed;right:9px}
+	pre {word-wrap:break-word; white-space:pre-wrap;}
+	</style>
+</head>
+<body>
+<iframe title="利用这个来承接额外的跳转副作用，只保留 Submit 的记忆" style="display:none" name="mdzz"></iframe>
+<form target="mdzz" action="会跳转不太好办，可以用onsubmit return false，但有个高明的骚操作，搞个 iframe专门吃这副作用的，用target指定它来，grep.html" method="put" id="opp"
+	ondrop="拖放处理(event)" ondragleave="回false(event)" ondragend="回false(event)" ondragover="回false(event)" autocomplete>
+<span>
+<textarea id="showSource" style="display:none"></textarea>
+<input type="file" id="fileInput" multiple Xaccept="text/html,.txt,.tex" onchange="读文件(this)" accesskey="1"/>
+<input id="ps" value="" placeholder="简单拆项 \book{ 、 documentclass" onblur="暴记(this);分拆(txt,this.value)" />
+<input id="res" value="begin.+?end" placeholder="正则拆项topic"  onblur="暴记(this);re拆(txt,this.value)" />
+<a id="emcount">项数</a>
+<button onclick="re拆(txt,'\\\\begin{InOnePage}.+?\\\\end{InOnePage}[\\n\\r]')" accesskey="t" id="ct">拆题</button>
+<button onclick="re拆(txt,'\\\\begin{zhishiqingdan}.+?\\\\end{zhishiqingdan}')" accesskey="z">拆知</button>
+<button onclick="re拆(txt,'\\\\begin{tabular}.+?\\\\end{tabular}')"  accesskey="b">拆表</button>
+<button onclick="项们=txt.split('\n')" accesskey="h">拆行</button>
+<button onclick="恢复()" accesskey="r">恢复</button>
+少于 <input id="maxlim" style="width:4em"  accesskey="y" type="number" value="-1" title="才自动展示"/> 
+<select>
+    <option value="题">题todo</option>
+    <option value="知">知</option>
+    <option value="topic">topic</option>
+</select>
+<textarea id="hist" style="position:absolute;opacity:.7;" rows="1" accesskey="h" >输入历史</textarea>
+</span><!-- <br/> -->
+<span>
+<input id="pf" accesskey="2" class="flt" onblur="暴记(this)" placeholder="2简单筛选，空格分隔" />
+<input id="ref" accesskey="3" class="flt" onblur="暴记(this)" placeholder="3正则筛选，可或" />
+<input id="ren" accesskey="4" class="flt" onblur="暴记(this)" placeholder="4正则排除" />
+<button onclick="grep();document.forms[0].submit()" accesskey="s">搜</button>
+<input value="重置(j)" type="reset" accesskey="J"/>
+<input type="checkbox" onclick="后处理= this.checked? 清除百分注:relax" accesskey="g" /> 清除百分注
+</span>
+</form todo="想用form表单历史记录特性，可惜会跳转">
+<pre id="r">showOpenFilePicker()showDirectoryPicker()showSaveFilePicker</pre>
+
+<script type="text/javascript" src="cfg.js"></script>
+<script>
+c = console.log
+txt = '' ; fl = 0; 项们 = [];
+const reader = new FileReader();
+reader.onload = function (e) {
+    const text = e.target.result.replace(/\r\n/g, '\n'); // reader.result
+    fo[ff[fth].name] = text ; 
+    txt += text; fth++;
+    if (fth<fl) {reader.readAsText(ff[fth], "UTF-8")} else {console.log('链式读取，结束，拼接为 txt，字典为 fo')} // 异步不能用同一个 reader 并行
+    };
+function 读文件(f){fo={};ff= f.files; fl=ff.length; fth = 0; reader.readAsText(ff[fth], "UTF-8")}
+function re拆(s,rt) {if (!rt) {return}; rt = RegExp(rt,'gs'); let it; 项们 = []; console.log('正则匹配为：', rt)
+    while (it = rt.exec(s)) {if (!项们.includes(it)) {项们.push(it[0])} };
+    emcount.innerHTML= `项数/ = ${项们.length}`
+	return 项们 }
+
+function 分拆(s,rt) {if (!rt) {return}; 项们 = []; 项们 = s.split(rt);
+	emcount.innerHTML= `项数/${rt} = ${项们.length}` }  // Array.from(new Set(s.split(rt)))
+
+function 空格分隔都含filter(项) {let b = true; for (let y of 含) {if (!项.includes(y)){b=false;break}}; return b}
+const relax = x => x
+预处理 =  后处理 = relax
+const 清除百分注 = x => x.replace(/%<\/?[a-zA-Z]+.*\n/g, '').replace(/\n\n+/g, '\n\n')
+function grep() {
+	if (项们.length < 1) {ct.click();console.log("未拆，默认拆题")};
+    if (fileInput.files.length === 0 && !txt) { alert('请先选择一个文件，或拖过来') ; fileInput.click(); return; }
+    可项们 = 项们;
+    if (pf.value){含 = pf.value.split(/\s+/) ; 可项们 = 可项们.filter(空格分隔都含filter) }  // 相邻 filter 性能，自己 优化未必比得过底层优化
+    if (ref.value){正则筛选器 = RegExp(ref.value,'gs'); 可项们 = 可项们.filter(项=> 正则筛选器.test(项)) ;}
+    if (ren.value){反则筛选器 = RegExp(ren.value,'gs'); 可项们 = 可项们.filter(项=> !反则筛选器.test(项)) ;}
+    var 数量限制 = Number(maxlim.value); if (数量限制 > 1 && 可项们.length > 数量限制 && confirm(数量限制 + ' 个；\n符合条件的很多，\n是否加条件\n\nEnter：确认\nEsc：取消')) {return false}
+    result = (可项们.length>0)? 可项们.join('\n🔥' + '一🔥'.repeat(25) +'\n') : '无🎃'
+    emcount.innerHTML= "项数 " + 可项们.length + '/' + 项们.length
+    r.textContent = 后处理(result)
+//     const resultLines = lines.filter(line => line.includes(pattern));
+//     r.textContent = resultLines.join('\n');
+}
+function 搜单字符串() {}
+function 暴记(e) {if (e.value.length>3 && !hist.value.includes(e.value)) {hist.value += '\n' + e.value}}
+
+function 记上一次() {document.querySelectorAll('input[id]:not([type])').forEach(x=>{if (x.value.length>3) {localStorage[x.id]=x.value}}) }
+function 恢复() {document.querySelectorAll('input[id]:not([type])').forEach(x=>{if (localStorage[x.id]) {x.value=localStorage[x.id]}}) }
+window.onclose = window.onbeforeunload = 记上一次
+document.querySelectorAll('[accesskey]').forEach(x=>{c(x.accessKey,x);x.innerHTML+= '/'  + x.accessKey})
+
+function 拖放处理(event){
+	event.preventDefault()
+	window.event.preventDefault() // 避免浏览器默认打开拖动的文件的操作
+	document.title = 'grep 🔍'
+	for (x of event.dataTransfer.files) {document.title += x.name + '，'}
+	读文件(window.event.dataTransfer)
+	return false }
+function 回false(event){event.preventDefault(); return false}  // 注意：ondragleave、ondragend、ondragover 都得阻止默认行为，好像不用也行。灵异！
+// TODO js 编辑距离： https://blog.csdn.net/qq_29311407/article/details/79802216
+</script>
+</body>
+</html>
