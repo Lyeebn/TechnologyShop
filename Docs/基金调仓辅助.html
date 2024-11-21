@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8" http-equiv="Cache-Control"  content="min-age=9999999999" />
+	<title>基金调仓辅助</title>
+</head>
+<body title="By Lyeebn / 本少🐢。1269692707@qq.com">
+<center>
+<p><button accesskey="X" onclick="计算()">✍【算Alt+X】（忽略小数）
+建议： <span>先写在记事本上，以免刷新导致数据丢失要重录；</span>
+<span>配比可以不写，默认为 1。</span>
+<span>基金名称不必写，</span>
+<span>逗号空格 + * / 都可分隔</span>
+</button> </p> 
+<a href='https://lyeebn.gitee.io/technology-shop/HeyBoss.html' target="_blank">
+作者主页： https://lyeebn.gitee.io/technology-shop/HeyBoss.html ，<br>
+【如需定制高级需求，请联系：1269692707@qq.com】如：爬走势图</a> 
+	<table>
+	<tr>
+		<td>🐢现状盘点【基金代码，资产】</td>
+		<td>🧾调仓配比【基金代码，配比】</td>
+    </tr>
+	<tr>
+		<td><textarea id="Current" cols="50" rows="5" autofocus="autofocus" >004605，2092
+001811，1955
+001532，1793
+005136，1590
+002593，1469
+009076，1270
+001216，1172
+006408，1080
+001718，1036
+003962，979
+090016，730
+013430，720
+004235，697
+013259，675
+012414，470
+006039，228
+013686，123
+999999/21
+999998，25050
+999997*250</textarea></td>
+		<td><textarea id="Goal" cols="50" rows="5" autofocus="autofocus" >013116
+013430
+007777
+015608
+014967
+010382，0.5
+011309
+011252
+011230
+006234
+001908，0.5
+012940，0.5
+010827，0.5
+999998，2
+999999,2</textarea></td>
+    </tr>
+	</table>
+<p>
+	<button accesskey="3" onclick="c.value=g.value=''">🍧删示例数据</button>
+	<button onclick="window.location.reload()" > 强制刷新 </button>
+	<button id='cache' onclick="document.querySelector('#DicLoader').src = './dicCodeName.js'">💰缓存</button>
+	<button accesskey="1"  onclick="查表()">📞【查表 = Alt + 1】</button>
+	<button accesskey="2"  onclick="化简()">🥕【简 = Alt + 2】</button>
+<button accesskey="q" onclick="放大()">💢缩放【Alt+Q】</button>
+</p>
+</center>
+<div id='Reuslt' title="按 快捷键：【Alt】+【X】 进行计算">
+</div>
+</body>
+	
+</html>
+
+<style>
+	table {width:99%;}
+	td  {width:48%;}
+	textarea {width:97%;min-height:360px;zoom:1}
+	body {zoom:1.5}
+	input {zoom:1.5; position:relative;top:4px; margin:-3px}
+	h5 {color:red}
+	a {text-align: center}
+	span {white-space:nowrap;zoom:0.75; max-width:95%}
+	body {background-color: #A4C0A7}
+</style>
+
+<script type="text/javascript">
+	t = console.table; l = console.log; ll = (x) =>{};
+	现状 = document.getElementById('Current'); c = 现状;
+	调仓 = document.getElementById('Goal'); g = 调仓;
+	结果 = document.getElementById('Reuslt'); r = 结果;
+	function 计算() {查表(); 化简();
+		gg = g.value.replace(/，$/gm, '，1').split('\n'); //l(zs, '----------')
+		gsum = 0; gset = {};
+		for (i of gg) {item = i.split('，');
+			gset[item[0]]=item[1]; gsum += Number(item[1])};
+		
+		cc = c.value.split('\n');
+		csum = 0; cset = {};
+		for (i of cc) {item = i.split('，');
+			cset[item[0]]=item[1]; csum += Number(item[1])};
+		OneUnit = csum/gsum // 每份配额 ，取整，不必太精确
+		OneUnit =  parseInt(OneUnit);
+		全卖 = '<h5> 旧爱【含泪清仓】全卖 </h5>'; 减持 = '<h5> 减持 </h5>'; 增持 = '<h5> 增持 </h5>'; 新宠 = '<h5> 新宠 </h5>'; 
+		for (i in cset) {if (gset[i]){Delta = gset[i]*OneUnit - cset[i]; l(i,'=i, Delta=', Delta);
+									  if (Delta<0){ 减持 += `${i}【一卖 ${Delta}】/ ${DicCodeName[i]}<br/>`}
+									  else {增持 += `${i}【十买 ${Delta}】/ ${DicCodeName[i]}<br/>`}
+							} else { 全卖 += `<tr><td>${i}【共 ${cset[i]}】/ ${DicCodeName[i]}<br/>`}
+			} ;
+		for (i in gset) {if (!cset[i]){l('新宠', ...gset[i]); 新宠 += `${i}【十买 ${gset[i]*OneUnit}】/ ${DicCodeName[i]}<br/>`}}
+		
+		结果.innerHTML = `总资产=￥${csum}，等分：${gsum}，每份 ￥ ${OneUnit}，${全卖}${减持}${增持}${新宠}`.replace(/】\//g, `】<input type="checkbox"/>`)
+	};
+
+function 化简() {c.value = c.value.replace(/[,+* %\/]+/gm, '，').replace(/^(\d{6}).+，/gm, '$1，').trim();
+				 g.value = g.value.replace(/[,+* %\/]+/gm, '，').replace(/^(\d{6}).+，/gm, '$1，').trim(); }
+
+function 查表() {化简();
+	c.value = c.value.replace(/^\d{6}/gm, (x) => {return x+ '，' + DicCodeName[x] + '，'}).replace(/，，+/g, '，');
+	g.value = g.value.replace(/^\d{6}/gm, (x) => {return x+ '，' + DicCodeName[x] + '，'}).replace(/，，+/g, '，'); }
+
+style = document.querySelector('style');
+function 放大() {if (style.innerHTML.includes('zoom:2')) { style.innerHTML = style.innerHTML.replace('zoom:2', 'zoom:1')}
+else{ style.innerHTML = style.innerHTML.replace('zoom:1}','zoom:2}')} }
+
+
+// sessionStorage['dicCodeName']
+window.onload = function () {
+if (localStorage['dicCodeName']) {dicCodeName= localStorage['dicCodeName']; 
+		eval('DicCodeName = {' + dicCodeName.replace(/(\d+):(.+)/gm,'"$1":"$2",') + '}')} else 
+{DicLoader.src='./dicCodeName.js'; 结果.innerHTML += '点【算】';} }
+
+// window.onload = 计算
+// window.onload = () => { 查表() ;计算()}
+
+// 前端手机上太小怎么办：自适应：http://www.ruanyifeng.com/blog/2012/05/responsive_web_design.html  // 算了，并排挺好的 
+</script>
+
+<script type="text/javascript" http-equiv="Cache-Control"  content="min-age=9999999999" ID="DicLoader"></script>
