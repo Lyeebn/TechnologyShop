@@ -1,23 +1,16 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="./ico/Raphael.ico" />
-    <title>🔍 grep 筛选项</title>
-    <style>
-	body {background-color:#A4C0A7; overflow-x:hidden} #xxr{padding-top:5em}
-	span {white-space:nowrap} textarea:hover{height:52vh!important}
+<html>	<head><meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./ico/Raphael.ico" /> <title>🔍 grep 筛选项</title>    <style>
+	body {background-color:#A4C0A7; min-height:90vh} #xxr{padding-top:5em}
+	span { overflow-x:hidden;Xwhite-space:nowrap} textarea:hover{height:52vh!important}
  	input.flt {min-width:25em}
 	input:focus {background:pink} XXinput:focus {zoom:1.1;width:20em}
-	#xxopp{background:#9B9;xxposition:fixed;width:98vw;opacity:.8}#opp:hover{ opacity:1; background:pink}
-	#opp:hover::after{content:"文件拖过来释放打开"; color:red; position:fixed;right:9px}
+	#xxopp{background:#9B9;xxposition:fixed;width:98vw;opacity:.8}#opp:hover{ opacity:1;height:9em; background:pink}
+	html:hover::after{content:"文件拖过来释放打开"; color:red; position:fixed;right:9px}
 	pre {word-wrap:break-word; white-space:pre-wrap;}
-	</style>
-</head>
-<body>
+</style>	</head>	<body>
 <iframe title="利用这个来承接额外的跳转副作用，只保留 Submit 的记忆" style="display:none" name="mdzz"></iframe>
-<form target="mdzz" action="会跳转不太好办，可以用onsubmit return false，但有个高明的骚操作，搞个 iframe专门吃这副作用的，用target指定它来，grep.html" method="put" id="opp"
-	ondrop="拖放处理(event)" ondragleave="回false(event)" ondragend="回false(event)" ondragover="回false(event)" autocomplete>
+<form target="mdzz" action="会跳转不太好办，可以用onsubmit return false，但有个高明的骚操作，搞个 iframe专门吃这副作用的，用target指定它来，grep.html" id="opp"	autocomplete>
 <span>
 <textarea id="showSource" style="display:none"></textarea>
 <input type="file" id="fileInput" multiple Xaccept="text/html,.txt,.tex" onchange="读文件(this)" accesskey="1"/>
@@ -35,7 +28,7 @@
     <option value="知">知</option>
     <option value="topic">topic</option>
 </select>
-<textarea id="hist" style="position:absolute;opacity:.7;" rows="1" accesskey="h" >输入历史</textarea>
+<textarea id="hist" style="xposition:absolute;opacity:.7;" rows="1" accesskey="h" >输入历史</textarea>
 </span><!-- <br/> -->
 <span>
 <input id="pf" accesskey="2" class="flt" onblur="暴记(this)" placeholder="2简单筛选，空格分隔" />
@@ -48,8 +41,7 @@
 </form todo="想用form表单历史记录特性，可惜会跳转">
 <pre id="r">showOpenFilePicker()showDirectoryPicker()showSaveFilePicker</pre>
 
-<script type="text/javascript" src="cfg.js"></script>
-<script>
+<script type="text/javascript" src="cfg.js"></script><script>
 c = console.log
 txt = '' ; fl = 0; 项们 = [];
 const reader = new FileReader();
@@ -102,7 +94,7 @@ function 拖放处理(event){
 	读文件(window.event.dataTransfer)
 	return false }
 function 回false(event){event.preventDefault(); return false}  // 注意：ondragleave、ondragend、ondragover 都得阻止默认行为，好像不用也行。灵异！
+document.body.ondrop=document.body.ondragleave=document.body.ondragend=document.body.ondragover=回false
+document.body.ondrop=拖放处理
 // TODO js 编辑距离： https://blog.csdn.net/qq_29311407/article/details/79802216
-</script>
-</body>
-</html>
+</script></body></html>
