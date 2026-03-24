@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html><meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8"/>
+<head><title>🅰字体预览器/LaTeX 工具仌</title>
+<style>
+/* 显示 FALLBack，优先看系统有没有，不行再从我站点下载，改为 按需调 */
+:root{ --fsize:52px; --hightlight:#f00 }
+.hfill {position:absolute;right:9px}
+textarea {;font-size:130%;min-width:20vw;min-height:8em;background:tan;min-width:92%;}
+#mID2:focus{position:absolute;left:0px;min-width:95vw;height:60vh}
+a {text-decoration: none;}
+.ee {background:unset;font-size:150%!important;font-family: 华文新魏}
+body {font-size:15px;background: #A4C0A7;margin:0px}
+tbody>tr>td:last-child{font-size:var( --fsize ); } td{max-width:78vw;word-wrap:break-word;}
+@keyframes hightLightMouseOver{ from {color: black;} to {var( --hightlight )} }
+tr:hover>td{color: var( --hightlight ); animation: hightLightMouseOver 1s;}
+pre{display:none}
+/* 改用 拼音那种
+Xb::before {content:attr(cite); Xwidth:3ex;xheight:3ex;display:inline-block; Xposition:absolute;Xz-index:-1;
+	font-family: monospace;line-height: 80% ; word-wrap: break-word; letter-spacing: .2ex; color:black}
+Xb {Xopacity:10%; border:solid 1px;} */
+rt {font-size:25%;user-select: none;margin:3pt}
+</style><style id="varStyle"></style>
+</head><body><center>  <h1 title="联系作者反馈问题/合作">
+	<a href='https://symbl.cc/cn/unicode-table/' target="_blank"> 字体预览器 / By LaTeX 工具仌 &copy; Lyeebn / 在野书生 1269692707@qq.com </a> </h1>
+	受浏览器限制，JavaScript 无法获取字体列表，需用户自行生成 系统字体报告，请提前准备好<br/>
+	①<a href="fc-list">工具 fc-list 下载</a>（②CMD 中运行如下命令<kbd> fc-list [:lang=zh] > R:\系统字体报告.txt </kbd>）③再导入进来<br/>
+    <!-- <button onclick="alert('加载 全 Unicode 回退字体');document.querySelector('style').innerHTML +=unicodeFB;预览输入框()">使用unicodeFB【慢⁉】建议自己事先安装</button> -->
+<table> <thead>
+	<tr style="position:sticky;top:-2px;vertical-align: top;"><br/>
+		<td title="受浏览器限制，JavaScript 无法获取字体列表，&#10;需用户自行生成（fc-list）">
+			<input accesskey="C" title='【Alt + C】&#10;导入字体报告' type="file" onchange='载入字体报告(this)' accesskey='C'/>
+			<input id="encoding" type="checkbox" title="打勾为 GBK 否则为 UTF-8&#10;中文旧 Windows 中默认为 GBK" />
+			<textarea id="mID2" onchange="预览输入框()"></textarea> </td>
+		<td>
+			<input onchange="unicode生成器(this.value)" value="0x2120 188" type="search" placeholder="0x16进制 数量 ← unicode生成器" style="width:8em" accesskey="a" title="Alt+A"/> <a class="ee"> [一-龟 -~]0x </a>
+    		<button onclick="alert('TODO 这样还得多一个配置文件\n1 兆呢，9876 条呢，\n尽量自己动手吧');mID2.value=LyeebnFontSet;预览输入框()">使用作者的配置</button>
+			<input type="color" onchange="document.documentElement.style.setProperty('--hightlight', this.value);" value="#ff0000" style="width:3ex;height:3.5ex">
+			<input type='range' min="8" max="96" onchange='document.documentElement.style.setProperty("--fsize", this.value + "px");this.title=this.value' /> 
+			<input id="cd" type="checkbox" checked title="js解析字符Unicode而非字体法 / Alt + j" accessKey="j" /><br>
+			<textarea id="mID1" autofocus="autofocus" placeholder="模特字" accesskey="s" title="Alt+S">字体模特+ABC-xyzΔΩαβθ</textarea> </td>
+    </tr></thead><tbody id="show"> 
+	<tr>	<td> 左 </td>	<td> 右 </td>   </tr>
+</tbody></table></center>
+
+<script type="text/javascript">
+c = console.log;
+const reader = new FileReader();
+reader.onload = function(){ mID2.value = this.result.replace(/\\/g,'');};
+变样 = document.getElementById('varStyle');
+展板 = document.getElementById('show');
+unicodeFB = ' @font-face { font-family: "AllUnicodeFallback";  src: url("oss/experiment/UnicodeBmpFallbackSil-R3KA.ttf") format("truetype");}'
+
+async function 预览(字体报告){ 字体表 = 字体报告.trim().split(/\n+/); q = 字体报告; w = 字体表; 样式 = ''; 序号=0;
+	内容 = mID1.value;
+	// 字码=内容.replace(/./g, m=>`<b cite="">${m.charCodeAt().toString(16)} ${m}</b>`);  //.padStart(4, '0')
+	字码= '<ruby>' + 内容.replace(/./gu, m=> `${m}<rt>${m.charCodeAt().toString(16).toUpperCase()}</rt>`).replace(/\n+/g, '</ruby><br/><ruby>') + '</ruby>';
+	模特 = 内容.replace(/\n+/g, '<br/>');
+	样品 = `<tr><td>浏览器默认字体<br/>正常 FallBack <br/>后文乱码为 Unicode 回退</td><td>${cd.checked?字码:模特}</td></tr>`;
+		// <tr><td>Unicode码 = Alt + X</td><td>${字码}</td></tr>
+	字体报告 = 字体报告.replace(/\\/g,'');
+	for (某字体 of 字体表) {某字体结构 = 某字体.split(/:(?!\/)/);  // c(某字体结构.length, 某字体结构[2].split(',')[0], 66); 
+		字体名 = 某字体结构.length>1? 某字体结构[1].split(',') : [某字体.replace(/^.+[\\/]|\.\w+$/g, '')];
+		if (!/:.Windows.Fonts/.test(某字体)) { // 格式：ttf/otf/woff/fon， TODO 非 Win OS
+			样式 += `\n@font-face { font-family: "${字体名[0].trim('处理空格BUG')}";  src: url("${某字体结构[0]}") format("truetype");}\n`}
+		样品 += '<tr><td title="' + 某字体结构[0] + '">' + 字体名.join('<br/>') + '</td><td id="Demo' + 序号 + '" >' + 模特 + '</td></tr>\n';
+		样式 += '#Demo' + 序号++ + ' {font-family:' + 字体名[0] + ', Unicode BMP Fallback SIL, AllUnicodeFallback}\n' };
+ 	展板.innerHTML = 样品;
+	变样.innerHTML = 样式;
+}
+
+function 载入字体报告(inputTag) {	reader.readAsText(inputTag.files[0], (document.getElementById('encoding').checked)? "UTF-8":"GBK") ; setTimeout(预览输入框, 200) }
+function 预览输入框() { 预览(mID2.value); }
+window.onload = 预览输入框;
+window.onkeyup = function(){ document.activeElement.id == 'mID1' && 预览输入框() }
+var LyeebnFontSet
+[mID2.value , LyeebnFontSet] = `★FZSTK.TTF: FZShuTi,方正舒体:style=Regular
+★SourceHanSansSC-Regular.otf: Source Han Sans SC,思源黑体,Source Han Sans SC Regular,思源黑体 Regular:style=Regular
+★simsun.ttc: NSimSun,新宋体:style=Regular,常规
+★timesbi.ttf: Times New Roman, 传说中的新罗马:style=Bold Italic,Negreta cursiva,tučné kurzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique,Félkövér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полужирный Курсив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,nghiêng đậm,Lodi etzana
+△truetype/public/droid/DroidSansMono.ttf: Droid Sans Mono,Android字体？:style=Regular
+C:/Android/Apple/Fonts/AdobeHeitiStd-Regular.otf: PingFang SC,安卓、苹果用啥字体有人知道吗？,教教我呗，不然都乱码了,乱码表示该字符不支持该字符:style=R,Regular
+★COPRGTL.TTF: Copperplate Gothic Light:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★UnicodeBmpFallbackSil-R3KA.ttf: Unicode BMP Fallback SIL,Spanish Unicode BMP Fallback SIL:style=Regular
+★eucsymbi.ttf: Euclid Symbol:style=Bold Italic
+C:/texlive/2026/texmf-dist/fonts/opentype/public/fandol/FandolKai-Regular.otf: FandolKai:style=Regular
+叕
+★timesbi.ttf: Times New Roman, 传说中的新罗马:style=Bold Italic,Negreta cursiva,,,,i etzana
+★FZSSK.TTF: FZShuSong\-Z01,方正书宋_GBK:style=Regular
+★STSONG.TTF: STSong,华文宋体:style=Regular
+★FZSTK.TTF: FZShuTi,方正舒体:style=Regular
+★SourceHanSansSC-Regular.otf: Source Han Sans SC,思源黑体,Source Han Sans SC Regular,思源黑体 Regular:style=Regular
+★simsun.ttc: NSimSun,新宋体:style=Regular,常规
+★方正书宋简体.TTF: FZShuSong\-Z01S,方正书宋简体:style=Regular
+★simfang.ttf: FangSong,仿宋:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★UnicodeBmpFallbackSil-R3KA.ttf: Unicode BMP Fallback SIL,Spanish Unicode BMP Fallback SIL:style=Regular
+★Dengb.ttf: DengXian,等线:style=Bold
+★SIMLI.TTF: LiSu,隶书:style=Regular
+★胡晓波骚包体.otf: HuXiaoBao\-SaoBao,胡晓波骚包体:style=Regular,常规
+★msyh.ttc: Microsoft YaHei UI:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★FZY3JW.TTF: FZZhunYuan\-M02S,方正准圆简体:style=Regular
+△opentype/public/fandol/FandolHei-Bold.otf: FandolHei:style=Bold
+★AdobeSongStd-Light.otf: Adobe Song Std,Adobe 宋体 Std,Adobe Song Std L,Adobe 宋体 Std L:style=L,Regular
+★SourceHanSerifCN-ExtraLight.otf: Source Han Serif CN,思源宋体 CN,Source Han Serif CN ExtraLight,思源宋体 CN ExtraLight:style=ExtraLight,Regular
+★FZHTJW.TTF: FZHei\-B01S,方正黑体简体:style=Regular
+★Deng.ttf: DengXian,等线:style=Regular
+★SourceHanSansCN-Bold.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN Bold,思源黑体 CN Bold:style=Bold
+★SourceHanSansCN-Light.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN Light,思源黑体 CN Light:style=Light,Regular
+★SourceHanSansHWSC-Regular.otf: Source Han Sans HW SC,思源黑体 HW,Source Han Sans HW SC Regular,思源黑体 HW Regular:style=Regular
+★STCAIYUN.TTF: STCaiyun,华文彩云:style=Regular
+★方正大黑_GBK.ttf: FZDaHei\-B02,方正大黑_GBK:style=Regular
+★msyh.ttc: Microsoft YaHei,微软雅黑:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★FZFSJW.TTF: FZFangSong\-Z02S,方正仿宋简体:style=Regular
+★fzy4k.TTF: 迷你简粗圆:style=Regular
+△truetype/public/arphic-ttf/bsmi00lp.ttf: AR PL Mingti2L Big5,文鼎ＰＬ細上海宋:style=Reguler,Regular
+★DFPHaiBaoW12-GB.ttf: DFPHaiBaoW12\-GB,华康海报体W12(P):style=Regular
+★msyhl.ttc: Microsoft YaHei,微软雅黑,Microsoft YaHei Light,微软雅黑 Light:style=Light,Regular
+★AdobeMingStd-Light.otf: Adobe Ming Std,Adobe 明體 Std,Adobe 明體 Std L,Adobe Ming Std L:style=L,Regular
+★FZJZJW.TTF: FZJianZhi\-M23S,方正剪纸简体:style=Regular
+△opentype/public/fandol/FandolFang-Regular.otf: FandolFang,FandolFang R:style=Regular
+★思源柔黑体.TTF: 思源柔黑体\-凤殿字体美化酷:style=Regular
+★STXINGKA.TTF: STXingkai,华文行楷:style=Regular
+★方正粗圆_GBK.TTF: FZCuYuan\-M03,方正粗圆_GBK:style=Regular
+★FZXKK.TTF: FZXingKai\-S04,方正行楷_GBK:style=Regular
+★Dengl.ttf: DengXian,等线,DengXian Light,等线 Light:style=Light,Regular
+★STZHONGS.TTF: STZhongsong,华文中宋:style=Regular
+△truetype/public/arphic-ttf/bkai00mp.ttf: AR PL KaitiM Big5,文鼎ＰＬ中楷:style=Regular
+★msyhl.ttc: Microsoft YaHei UI,Microsoft YaHei UI Light:style=Light,Regular
+△opentype/public/fandol/FandolKai-Regular.otf: FandolKai:style=Regular
+★ARIALUNI.TTF: Arial Unicode MS:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★SourceHanSansCN-Regular.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN Regular,思源黑体 CN Regular:style=Regular
+△opentype/public/fandol/FandolSong-Regular.otf: FandolSong:style=Regular
+★FZYTK.TTF: FZYaoTi,方正姚体:style=Regular
+★msjhl.ttc: Microsoft JhengHei UI,Microsoft JhengHei UI Light:style=Light,Regular
+△truetype/public/arphic-ttf/gkai00mp.ttf: AR PL KaitiM GB,文鼎ＰＬ简中楷:style=Regular
+★STHUPO.TTF: STHupo,华文琥珀:style=Regular
+★SourceHanSansCN-Heavy.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN Heavy,思源黑体 CN Heavy:style=Heavy,Bold
+★FZ11.TTF: FZDaBiaoSong\-B06S,方正大标宋简体:style=Regular
+★DFPHaiBaoW12-B5.TTF: DFPHaiBaoW12\-B5,華康海報體W12(P):style=Regular
+★SourceHanSansCN-Normal.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN Normal,思源黑体 CN Normal:style=Normal,Regular
+★AdobeFangsongStd-Regular.otf: Adobe Fangsong Std,Adobe 仿宋 Std,Adobe Fangsong Std R,Adobe 仿宋 Std R:style=R,Regular
+★SourceHanSerifCN-Bold.otf: Source Han Serif CN,思源宋体 CN:style=Bold
+★msjhbd.ttc: Microsoft JhengHei UI:style=Negreta,Bold,tučné,fed,Fett,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kalın,Krepko,Lodia
+★FZXKJW.TTF: FZXingKai\-S04S,方正行楷简体:style=Regular
+★simhei.ttf: SimHei,黑体:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★FZY4JW.TTF: FZCuYuan\-M03S,方正粗圆简体:style=Regular
+★FZHTK.TTF: FZHei\-B01,方正黑体_GBK:style=Regular
+★STLITI.TTF: STLiti,华文隶书:style=Regular
+★msjh.ttc: Microsoft JhengHei,微軟正黑體:style=Normal,Regular,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★simsun.ttc: SimSun,宋体:style=Regular,常规
+★字魂7号-温暖童稚体.TTF: zihun7hao\-wennuantongzhiti,字魂7号\-温暖童稚体:style=Regular
+★msjhbd.ttc: Microsoft JhengHei,微軟正黑體:style=Negreta,Bold,tučné,fed,Fett,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kalın,Krepko,Lodia
+★SourceHanSerifSC-Medium.otf: Source Han Serif SC,思源宋体,Source Han Serif SC Medium,思源宋体 Medium:style=Medium,Regular
+★FZLSJW.TTF: FZLiShu\-S01S,方正隶书简体:style=Regular
+△opentype/public/fandol/FandolSong-Bold.otf: FandolSong:style=Bold
+★msjh.ttc: Microsoft JhengHei UI:style=Normal,Regular,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★SIMYOU.TTF: YouYuan,幼圆:style=Regular
+★STXINWEI.TTF: STXinwei,华文新魏:style=Regular
+★AdobeFanHeitiStd-Bold.otf: Adobe Fan Heiti Std,Adobe 繁黑體 Std,Adobe 繁黑體 Std B,Adobe Fan Heiti Std B:style=B,Bold
+★FZYTJW.TTF: FZYaoTi\-M06S,方正姚体简体:style=Regular
+★方正准圆_GBK.TTF: FZZhunYuan\-M02,方正准圆_GBK:style=Regular
+★msjhl.ttc: Microsoft JhengHei,微軟正黑體,微軟正黑體 Light,Microsoft JhengHei Light:style=Light,Regular
+★FZKTJW.TTF: FZKai\-Z03S,方正楷体简体:style=Regular
+★4112_方正细圆_GBK.TTF: FZXiYuan\-M01,方正细圆_GBK:style=Regular
+★STKAITI.TTF: STKaiti,华文楷体:style=Regular
+★STXIHEI.TTF: STXihei,华文细黑:style=Regular
+★simkai.ttf: KaiTi,楷体:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+★SourceHanSerifCN-SemiBold.otf: Source Han Serif CN,思源宋体 CN,Source Han Serif CN SemiBold,思源宋体 CN SemiBold:style=SemiBold,Regular
+★SourceHanSerifCN-Heavy.otf: Source Han Serif CN,思源宋体 CN,Source Han Serif CN Heavy,思源宋体 CN Heavy:style=Heavy,Regular
+★msyhbd.ttc: Microsoft YaHei UI:style=Bold,Negreta,tučné,fed,Fett,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kalın,Krepko,Lodia
+△truetype/public/arphic-ttf/gbsn00lp.ttf: AR PL SungtiL GB,文鼎ＰＬ简报宋:style=Regular
+★SourceHanSerifCN-Light.otf: Source Han Serif CN,思源宋体 CN,Source Han Serif CN Light,思源宋体 CN Light:style=Light,Regular
+△opentype/public/fandol/FandolHei-Regular.otf: FandolHei:style=Regular
+★SourceHanSansCN-Medium.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN Medium,思源黑体 CN Medium:style=Medium,Regular
+★FZSHJW.TTF: FZSongHei\-B07S,方正宋黑简体:style=Regular
+★SourceHanSansCN-ExtraLight.otf: Source Han Sans CN,思源黑体 CN,Source Han Sans CN ExtraLight,思源黑体 CN ExtraLight:style=ExtraLight,Regular
+★SourceHanSerifCN-Regular.otf: Source Han Serif CN,思源宋体 CN:style=Regular
+★fzy4k_GBK.TTF: FZZhunYuan\-M02,方正准圆_GBK:style=Regular
+★msyhbd.ttc: Microsoft YaHei,微软雅黑:style=Bold,Negreta,tučné,fed,Fett,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kalın,Krepko,Lodia
+★AdobeHeitiStd-Regular.otf: Adobe Heiti Std,Adobe 黑体 Std,Adobe Heiti Std R,Adobe 黑体 Std R:style=R,Regular
+★SourceHanSerifSC-SemiBold.otf: Source Han Serif SC,思源宋体,Source Han Serif SC SemiBold,思源宋体 SemiBold:style=SemiBold,Regular
+★STFANGSO.TTF: STFangsong,华文仿宋:style=Regular
+★FZLTHJW.TTF: FZLanTingHeiS\-R\-GB,方正兰亭黑简体:style=Regular
+★AdobeKaitiStd-Regular.otf: Adobe Kaiti Std,Adobe 楷体 Std,Adobe Kaiti Std R,Adobe 楷体 Std R:style=R,Regular
+★SourceHanSerifCN-Medium.otf: Source Han Serif CN,思源宋体 CN,Source Han Serif CN Medium,思源宋体 CN Medium:style=Medium,Regular
+`.replace(/★/g, 'C:/Windows/Fonts/').replace(/△/g, 'C:/ProTeXt_MiKTeX_2.9/fonts/').split(/叕/)
+function unicode生成器(x) {var i=j=0; x.replace(/^(.)-(.)$/, (m,m1,m2)=> {i= m1.charCodeAt();j=m2.charCodeAt()+1})
+	if (!i) {v=/(0x[\dA-F]+) (\d+)/i; b= v.exec(x.replace(/^(.)\s+/, (m,m1)=> i= '0x'+m1.charCodeAt().toString(16)+' '));
+i = parseInt(b[1]); j = i + parseInt(b[2]);}
+for (; i < j; i++) { console.log(`%c${String.fromCharCode(i)} ${i.toString(16)}`, 'font-size:2em') ; mID1.value += String.fromCharCode(i)};
+预览输入框()}
+</script></body></html>
+<pre>
+关于
+想要查看某些字符选择合适的字体挺麻烦
+Word 、 Illustrator 、 LaTeX 逐个换着试，操作很累，低效，
+下拉挨个换，真的会疯掉
+这个工具
+写出你需要的字符，列出你系统中安装的字体
+
+dir /b C:\Windows\Fonts\ > R:\font.txt 
+CSS 如果需要使用本地字体需先声明，或 使用系统注册的字体名信息，而不是直接文件名。
+
+fc-list 的结果怎么看：<p/> 每行为一条字体信息，其默认结构如下：<br/> 
+【完整路径文件名】 : 【字体名,乳名,外号】 : 【style=样式粗,中,细,等】<br/> 
+其中：【字体名】、【样式粗】均可能有多个值，以逗号分隔
+\-，\\ 转义为 -、\ 等等
+
+类似的，以 fc-开头 .exe结尾的程序，如： fc-match -v "SimHei"
+
+Ω 用：方正仿宋简体、方正舒体，对减号什么的也很好看
+TODO：
+fc-list [-f "%{file}:%{family}:%{lang}\n" :lang=zh] 筛选语言
+不同 style 变种有必要遍历吗，太多了感觉也乱
+过滤筛选功能
+禁用 FallBack 回退 【搜索 Last Resort Fonts →  https://get.fontspace.co/download/family/zx29/b5db06ae896f49dda997f5da211f0469/unicode-bmp-fallback-sil-font.zip 【UnicodeBmpFallbackSil-R3KA.ttf】Tnanks to QQ693511570  https://github.com/unicode-org/last-resort-font
+Win 下 盘符也是冒号，但不是字段分割符
+fc-list 非默认输出格式		
+排序？字体表.sort()
+async？还没感觉到卡
+JS 真的不能自己获取字体报告吗
+安卓 iOS 字体都被 FallBack了？
+字体教程 xeCJK、ctex-faq.pdf、https://www.latexstudio.net/archives/tex-documents.html
+方正白体_S10 白斜体
+
+https://www.zhihu.com/question/50862287
+https://ask.latexstudio.net/ask/question/8101.html
+https://ask.latexstudio.net/ask/question/8049.html
+</pre>
