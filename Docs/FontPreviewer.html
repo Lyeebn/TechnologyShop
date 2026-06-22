@@ -52,8 +52,8 @@ unicodeFB = ' @font-face { font-family: "AllUnicodeFallback";  src: url("oss/exp
 
 async function 预览(字体报告){ 字体表 = 字体报告.trim().split(/\n+/); q = 字体报告; w = 字体表; 样式 = ''; 序号=0;
 	内容 = mID1.value;
-	// 字码=内容.replace(/./g, m=>`<b cite="">${m.charCodeAt().toString(16)} ${m}</b>`);  //.padStart(4, '0')
-	字码= '<ruby>' + 内容.replace(/./gu, m=> `${m}<rt>${m.charCodeAt().toString(16).toUpperCase()}</rt>`).replace(/\n+/g, '</ruby><br/><ruby>') + '</ruby>';
+	// 字码=内容.replace(/./g, m=>`<b cite="">${m.codePointAt().toString(16)} ${m}</b>`);  //.padStart(4, '0')
+	字码= '<ruby>' + 内容.replace(/./gu, m=> `${m}<rt>${m.codePointAt().toString(16).toUpperCase()}</rt>`).replace(/\n+/g, '</ruby><br/><ruby>') + '</ruby>';
 	模特 = 内容.replace(/\n+/g, '<br/>');
 	样品 = `<tr><td>浏览器默认字体<br/>正常 FallBack <br/>后文乱码为 Unicode 回退</td><td>${cd.checked?字码:模特}</td></tr>`;
 		// <tr><td>Unicode码 = Alt + X</td><td>${字码}</td></tr>
@@ -183,10 +183,10 @@ C:/texlive/2026/texmf-dist/fonts/opentype/public/fandol/FandolKai-Regular.otf: F
 ★AdobeKaitiStd-Regular.otf: Adobe Kaiti Std,Adobe 楷体 Std,Adobe Kaiti Std R,Adobe 楷体 Std R:style=R,Regular
 ★SourceHanSerifCN-Medium.otf: Source Han Serif CN,思源宋体 CN,Source Han Serif CN Medium,思源宋体 CN Medium:style=Medium,Regular
 `.replace(/★/g, 'C:/Windows/Fonts/').replace(/△/g, 'C:/ProTeXt_MiKTeX_2.9/fonts/').split(/叕/)
-function unicode生成器(x) {var i=j=0; x.replace(/^(.)-(.)$/, (m,m1,m2)=> {i= m1.charCodeAt();j=m2.charCodeAt()+1})
-	if (!i) {v=/(0x[\dA-F]+) (\d+)/i; b= v.exec(x.replace(/^(.)\s+/, (m,m1)=> i= '0x'+m1.charCodeAt().toString(16)+' '));
+function unicode生成器(x) {var i=j=0; x.replace(/^(.)-(.)$/u, (m,m1,m2)=> {i= m1.codePointAt();j=m2.codePointAt()+1})
+	if (!i) {v=/(0x[\dA-F]+) (\d+)/i; b= v.exec(x.replace(/^(.)\s+/u, (m,m1)=> i= '0x'+m1.codePointAt().codePointAt(16)+' '));
 i = parseInt(b[1]); j = i + parseInt(b[2]);}
-for (; i < j; i++) { console.log(`%c${String.fromCharCode(i)} ${i.toString(16)}`, 'font-size:2em') ; mID1.value += String.fromCharCode(i)};
+for (; i < j; i++) { console.log(`%c${String.fromCodePoint(i)} ${i.toString(16)}`, 'font-size:2em') ; mID1.value += String.fromCodePoint(i)};
 预览输入框()}
 </script></body></html>
 <pre>
