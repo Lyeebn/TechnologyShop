@@ -4,12 +4,12 @@
 	body {background-color:#A4C0A7; min-height:75vh;zoom:125%} #xxr{padding-top:5em}
 	span { overflow-x:hidden;Xwhite-space:nowrap} #hist:hover,#hist:focus{height:66vh!important}
  	input.flt {min-width:25em}  #hist{user-select: none;}
-	input:focus,textarea:focus {background:pink} XXinput:focus {Xzoom:1.1;width:20em}
+	input:focus,textarea:focus,b {background:pink} XXinput:focus {Xzoom:1.1;width:20em}
 	form{background:#9B9;position:sticky;top:2px;margin:-7px;} #opp:hover{ opacity:1;background:pink}
 	html:hover::after{content:"文件拖过来释放打开"; color:red; position:fixed;right:9em;bottom:2em}
-	pre {word-wrap:break-word; white-space:pre-wrap;}
+	pre {word-wrap:break-word; white-space:pre-wrap;} iframe{display:none}
 </style>	</head>	<body>
-<iframe title="利用这个来承接额外的跳转副作用，只保留 Submit 的记忆" style="display:none" name="mdzz"></iframe>
+<iframe title="利用这个来承接额外的跳转副作用，只保留 Submit 的记忆" name="mdzz"></iframe>
 <form target="mdzz" action="会跳转不太好办，可以用onsubmit return false，但有个高明的骚操作，搞个 iframe专门吃这副作用的，用target指定它来，grep.html" id="opp"	autocomplete>
 <span>
 <input id="ps" value="" placeholder="简单拆项 \book{ 、 documentclass" onblur="暴记(this);分拆(txt,this.value)" />
@@ -36,12 +36,15 @@
 <input type="checkbox" onclick="后处理= this.checked? 清除百分注:relax" accesskey="g" title="Alt+G"/> 清除百分注
 |<input type="checkbox" id="hl" accesskey="-" /> 换分割符
 <input type="file" id="fileInput" multiple Xaccept="text/html,.txt,.tex" onchange="读文件(this)" accesskey="4" style="width:9em" title="Alt+1 打开文件"/>
+<input type="checkbox" id="gl" accesskey="C" title="Alt+C，默认高亮关键词"/>
 <input type="checkbox" onclick="hist.style.display=this.checked? 'block':'none'" accesskey="J" title="Alt+J，显隐搜索历史记录"/>史
+<input accesskey="a" title="【Alt+A】图库" onchange="figlib.style.display= (this.checked)? 'block':'none'" type="checkbox"/>
+<iframe id="figlib" style="height: 52vh; width: 100%; opacity: 0.96; max-height: 41em; margin: -8px;"></iframe>
 </span>
 <textarea id="hist" style="position:fixed;right:1ex;display:none" rows="1" accesskey="h" >输入历史</textarea>
 </form>
 <pre id="r">showOpenFilePicker / showDirectoryPicker / showSaveFilePicker
-	
+
 拖放打开</pre>
 
 <script type="text/javascript" DEVsrc="cfg.js"></script><script>
@@ -67,7 +70,7 @@ function 分拆(s,rt) {if (!rt) {return}; 项们 = [];
 	项们 = s.replace(/%<\/?[a-zA-Z]+.*|\\(begin|end){(InOnePage|comment)}|\\itemQ.+/gm, '').replace(/\n\n+/g, '\n\n').split(rt);
 		项们=Array.from(new Set(项们)) // 去重
 	emcount.innerHTML= `项数/${rt} = ${项们.length}` } 
-
+if (location.protocol=='file:'){figlib.src='file:///D:/User/Desktop/图池/pdf教材图库查看器.htm'};
 function 空格分隔都含filter(项) {let b = true; for (let y of 含) {if (!项.includes(y)){b=false;break}}; return b}
 const relax = x => x
 预处理 =  后处理 = relax
@@ -78,12 +81,14 @@ function grep() {
     if (fileInput.files.length === 0 && !txt) { alert('请先选择一个文件，或拖过来') ; fileInput.click(); return; }
     可项们 = 项们;
     if (pf.value){含 = pf.value.split(/\s+/) ; 可项们 = 可项们.filter(空格分隔都含filter) }  // 相邻 filter 性能，自己 优化未必比得过底层优化
-    if (ref.value){正则筛选器 = RegExp(ref.value,'gs'); 可项们 = 可项们.filter(项=> 正则筛选器.test(项)) ;}
-    if (ren.value){反则筛选器 = RegExp(ren.value,'gs'); 可项们 = 可项们.filter(项=> !反则筛选器.test(项)) ;}
+    if (ref.value){正则筛选器 = RegExp(ref.value,'us'); 可项们 = 可项们.filter(项=> 正则筛选器.test(项)) ;}
+    if (ren.value){反则筛选器 = RegExp(ren.value,'us'); 可项们 = 可项们.filter(项=> !反则筛选器.test(项)) ;}
     var 数量限制 = Number(maxlim.value); if (数量限制 > 1 && 可项们.length > 数量限制 && confirm(数量限制 + ' 个；\n符合条件的很多，\n是否加条件\n\nEnter：确认\nEsc：取消')) {return false}
     result = (可项们.length>0)? 可项们.join(分割符[hl.checked?1:0]) : '无🎃'
     emcount.innerHTML= "项数 " + 可项们.length + '/' + 项们.length
-    r.textContent = 后处理(result)
+	if (gl.checked||!pf.value) {r.textContent = 后处理(result)} else{let zz = 后处理(result).replace(	
+    RegExp(pf.value.trim().replace(/\s+/g,'|'),'gs'), m=>`<b>${m}</b>`)  // TODO 可能和下行交换会好点
+	r.innerHTML = ref.value? zz.replace(RegExp(ref.value,'gum'), m=>`<b>${m}</b>`): zz}
 //     const resultLines = lines.filter(line => line.includes(pattern));
 //     r.textContent = resultLines.join('\n');
 }
