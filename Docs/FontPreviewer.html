@@ -36,7 +36,8 @@ rt {font-size:25%;user-select: none;margin:3pt}
     		<button onclick="alert('TODO 这样还得多一个配置文件\n1 兆呢，9876 条呢，\n尽量自己动手吧');mID2.value=LyeebnFontSet;预览输入框()">使用作者的配置</button>
 			<input type="color" onchange="document.documentElement.style.setProperty('--hightlight', this.value);" value="#ff0000" style="width:3ex;height:3.5ex">
 			<input type='range' min="8" max="96" onchange='document.documentElement.style.setProperty("--fsize", this.value + "px");this.title=this.value' /> 
-			<input id="cd" type="checkbox" checked title="js解析字符Unicode而非字体法 / Alt + j" accessKey="j" /><br>
+			<input id="cd" type="checkbox" checked title="js解析字符Unicode而非字体法 / Alt + j" accessKey="j" />
+			<button onclick="mID1.value+='\n\n🚩排序去重🍄\n'+Array.from(new Set(mID1.value.split(''))).sort().join('')">排序去重</button><br>
 			<textarea id="mID1" autofocus="autofocus" placeholder="模特字" accesskey="s" title="Alt+S">字体模特+ABC-xyzΔΩαβθ</textarea> </td>
     </tr></thead><tbody id="show"> 
 	<tr>	<td> 左 </td>	<td> 右 </td>   </tr>
@@ -82,7 +83,7 @@ C:/Android/Apple/Fonts/AdobeHeitiStd-Regular.otf: PingFang SC,安卓、苹果用
 ★COPRGTL.TTF: Copperplate Gothic Light:style=Regular,Normal,obyčejné,Standard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
 ★UnicodeBmpFallbackSil-R3KA.ttf: Unicode BMP Fallback SIL,Spanish Unicode BMP Fallback SIL:style=Regular
 ★eucsymbi.ttf: Euclid Symbol:style=Bold Italic
-C:/texlive/2026/texmf-dist/fonts/opentype/public/fandol/FandolKai-Regular.otf: FandolKai:style=Regular
+C:/texlive/2023/texmf-dist/fonts/opentype/public/fandol/FandolKai-Regular.otf: FandolKai:style=Regular
 叕
 ★timesbi.ttf: Times New Roman, 传说中的新罗马:style=Bold Italic,Negreta cursiva,,,,i etzana
 ★FZSSK.TTF: FZShuSong\-Z01,方正书宋_GBK:style=Regular
