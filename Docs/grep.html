@@ -2,7 +2,7 @@
 <html>	<head><meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="http://localhost:5678/dev/Raphael.png" /> <title>🔍 grep 筛选项</title>	<style>
 	body {background-color:#A4C0A7; min-height:75vh;zoom:125%} #xxr{padding-top:5em}
-	span { overflow-x:hidden;Xwhite-space:nowrap} #hist:hover,#hist:focus{height:66vh!important}
+	span { overflow-x:hidden;Xwhite-space:nowrap} #hist:hover,#hist:focus{field-sizing:content!important}
  	input.flt {min-width:25em}  #hist{user-select: none;}
 	input:focus,textarea:focus,b {background:pink} XXinput:focus {Xzoom:1.1;width:20em}
 	form{background:#9B9;position:sticky;top:2px;margin:-7px;} #opp:hover{ opacity:1;background:pink}
@@ -37,11 +37,11 @@
 |<input type="checkbox" id="hl" accesskey="-" /> 换分割符
 <input type="file" id="fileInput" multiple Xaccept="text/html,.txt,.tex" onchange="读文件(this)" accesskey="4" style="width:9em" title="Alt+1 打开文件"/>
 <input type="checkbox" id="gl" accesskey="C" title="Alt+C，默认高亮关键词"/>
-<input type="checkbox" onclick="hist.style.display=this.checked? 'block':'none'" accesskey="J" title="Alt+J，显隐搜索历史记录"/>史
+<input type="checkbox" onclick="hist.style.display=this.checked? 'block':'none'" accesskey="J" title="Alt+J，显隐搜索历史记录"/><a onclick="txt=hist.value">入</a>
 <input accesskey="a" title="【Alt+A】图库" onchange="figlib.style.display= (this.checked)? 'block':'none'" type="checkbox"/>
 <iframe id="figlib" style="height: 52vh; width: 100%; opacity: 0.96; max-height: 41em; margin: -8px;"></iframe>
 </span>
-<textarea id="hist" style="position:fixed;right:1ex;display:none" rows="1" accesskey="h" >输入历史</textarea>
+<textarea id="hist" style="position:fixed;right:1ex;display:none;min-height:6em" rows="1" accesskey="h" >输入历史，文本传入</textarea>
 </form>
 <pre id="r">showOpenFilePicker / showDirectoryPicker / showSaveFilePicker
 
